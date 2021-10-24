@@ -16,15 +16,19 @@ Usage:
 setting:
 ------
 ```
-""setting
+""vimrc setting
+"いずれも無設定でも運用可能。
+
 "windowに表示するmarkの指定
+"設定していない文字でもsignによる表示は有効。
 let g:marker_window_local = 'abcde'
 let g:marker_window_global = 'ABCDE'
 
 "windowに表示するlocalなマークの行の内容を置換する
-let g:mark_replace = [["","",""],["","","g"]]
+"s///gと同じ。
+let g:mark_replace = [["before","after",""],["","","g"]]
 
-"windowのサイズを指定する。
+"windowの横サイズを指定する。
 let g:MarkerInfoWindowSize =30
 ```
 
