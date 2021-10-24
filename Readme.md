@@ -1,9 +1,9 @@
-##VimMarkerInfo
+VimMarkerInfo
 =============
 VimMarkerInfo はmarkの位置の可視化とマークの内容をいつでも確認することできるようになるプラグインです。
 各種コマンドの詳細はhelp /doc/VimMarkerInfo.jaxを確認ください。
 
-##Usage:
+Usage:
 ------
 ```
 開始
@@ -13,7 +13,7 @@ VimMarkerInfo はmarkの位置の可視化とマークの内容をいつでも�
 	:MarkerInfoOff
 ```
 
-##setting:
+setting:
 ------
 ```
 ""setting
@@ -29,11 +29,11 @@ let g:MarkerInfoWindowSize =30
 ```
 
 
-##License:
+License:
 --------
 MIT
 
-##Author:
+Author:
 -------
 ambergon
 [twitter](https://twitter.com/Sc_lFoxGon)
