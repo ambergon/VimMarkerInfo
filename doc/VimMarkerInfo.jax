@@ -1,0 +1,171 @@
+*VimMarkerInfo.txt*	日本語ヘルプ
+
+Version : 
+Author  : ambergon
+License : MIT license  {{{
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+}}}
+
+==============================================================================
+目次						*VimMarkerInfo-contents*
+
+概要				|VimMarkerInfo-introduction|
+使い方				|VimMarkerInfo-usage|
+インターフェイス		|VimMarkerInfo-interface|
+  変数				  |VimMarkerInfo-variables|
+  コマンド			  |VimMarkerInfo-commands|
+  キーマッピング		  |VimMarkerInfo-key-mappings|
+  関数				  |VimMarkerInfo-functions|
+TODO				|VimMarkerInfo-todo|
+更新履歴			|VimMarkerInfo-changelog|
+
+
+==============================================================================
+概要						*VimMarkerInfo-introduction*
+
+*VimMarkerInfo*
+はmarkの位置の可視化とマークの内容をいつでも確認することできるようになるプラグインです。
+
+最新版:
+https://github.com/user/VimMarkerInfo.vim
+
+
+==============================================================================
+使い方						*VimMarkerInfo-usage*
+
+
+開始
+	:MarkerInfo
+
+終了
+	:MarkerInfoOff
+	
+
+==============================================================================
+インターフェイス				*VimMarkerInfo-interface*
+
+
+マークした場所をsignで視覚化します。
+globalなマークとlocalなマークが重なった場合はglobalが優先されます。
+
+専用ウィンドウに現在のマーク一覧が表示されます
+local : マークした行の内容。設定により置換が実行される。
+global: マークしたファイル名。
+
+------------------------------------------------------------------------------
+変数						*VimMarkerInfo-variables*
+
+g:marker_window_local				*g:marker_window_local*
+	既定値: =s:local_list
+
+
+localなマーク[a-z]を指定します。
+指定しなかった場合はwindowに表示されるマークはa~zまでになります。
+a,b,cの三つのみが確認できればいい場合はvimrcに以下のように設定します。
+g;marker_window_local='abc'
+
+
+
+g:marker_window_global				*g:marker_window_global*
+	既定値: =s:global_list
+
+
+globalなマーク[A-Z]を指定します。
+指定しなかった場合はwindowに表示されるマークはA~Zまでになります。
+A,B,Cの三つのみが確認できればいい場合はvimrcに以下のように設定します。
+g;marker_window_local='ABC'
+
+
+g:mark_replace					*g:mark_replace*
+	既定値: =[["","",""]]
+
+
+windowに表示される内容を置換します。複数指定することが可能です。
+windowを小さく有効活用する際に便利です。
+
+functionを表示しないようにする場合。
+g:mark_replace=[["function","",""],["置換前","置換後","flag"]
+
+flagには"g"を指定できます。
+s///gと同じものです。
+
+
+
+g:MarkerInfoWindowSize				*g:MarkerInfoWindowSize*
+	既定値: =30
+
+
+ウィンドウの横幅を指定します。
+
+
+------------------------------------------------------------------------------
+コマンド					*VimMarkerInfo-commands*
+
+:MarkerInfo					*:MarkerInfo*
+
+専用windowの表示とsignによるマークの視覚化をします。
+
+
+:MarkerInfoOff					*:MarkerInfoOff*
+
+
+------------------------------------------------------------------------------
+キーマッピング					*VimMarkerInfo-key-mappings*
+
+------------------------------------------------------------------------------
+関数						*VimMarkerInfo-functions*
+
+VimMarkerInfo#Replace( {text} )			*VimMarkerInfo#Replace()*
+
+
+VimMarkerInfo#closeWindow()			*VimMarkerInfo#closeWindow()*
+
+
+VimMarkerInfo#openMarkerWindow()	*VimMarkerInfo#openMarkerWindow()*
+
+
+VimMarkerInfo#setHighLight()			*VimMarkerInfo#setHighLight()*
+
+
+VimMarkerInfo#setWindow()			*VimMarkerInfo#setWindow()*
+
+
+VimMarkerInfo#signSet()				*VimMarkerInfo#signSet()*
+
+
+VimMarkerInfo#windowAppendLines()	*VimMarkerInfo#windowAppendLines()*
+
+
+VimMarkerInfo#windowGlobalMark({word})	*VimMarkerInfo#windowGlobalMark()*
+
+
+VimMarkerInfo#windowLocalMark({word})	*VimMarkerInfo#windowLocalMark()*
+
+
+==============================================================================
+TODO						*VimMarkerInfo-todo*
+
+
+
+==============================================================================
+更新履歴					*VimMarkerInfo-changelog*
+
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:
