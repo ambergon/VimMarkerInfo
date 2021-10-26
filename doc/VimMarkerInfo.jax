@@ -72,7 +72,7 @@ global: マークしたファイル名。
 変数						*VimMarkerInfo-variables*
 
 g:marker_window_local				*g:marker_window_local*
-	既定値: =s:local_list
+	既定値: ='abcdefghijklmnopqrstuvwxyz'
 
 
 localなマーク[a-z]を指定します。
@@ -83,7 +83,7 @@ g;marker_window_local='abc'
 
 
 g:marker_window_global				*g:marker_window_global*
-	既定値: =s:global_list
+	既定値: ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 
 globalなマーク[A-Z]を指定します。
@@ -127,6 +127,9 @@ g:MarkerInfoWindowSize				*g:MarkerInfoWindowSize*
 
 ------------------------------------------------------------------------------
 キーマッピング					*VimMarkerInfo-key-mappings*
+
+専用windowはqで終了することができます。
+
 
 ------------------------------------------------------------------------------
 関数						*VimMarkerInfo-functions*
