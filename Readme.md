@@ -3,6 +3,10 @@ VimMarkerInfo
 VimMarkerInfo はmarkの位置の可視化とマークの内容をいつでも確認することできるようになるプラグインです。
 各種コマンドの詳細はhelp /doc/VimMarkerInfo.jaxを確認ください。
 
+Required
+------
+Vim 8.2~
+
 Usage:
 ------
 ```
