@@ -135,7 +135,7 @@ endfunction
 
 function! VimMarkerInfo#setHighLight()
     "windowsのカラーテーブル
-    if has( win64 )
+    if has( 'win64' )
         ""local_markの色を定義
         hi LocalMark ctermfg=254 ctermbg=242 guifg=#f9f1a5 guibg=#13a10e
         ""global_markの色を定義
