@@ -134,10 +134,21 @@ function! VimMarkerInfo#signSet()
 endfunction
 
 function! VimMarkerInfo#setHighLight()
-    ""local_markの色を定義
-    hi LocalMark ctermfg=254 ctermbg=242 guifg=#e4e4e4 guibg=#666666
-    ""global_markの色を定義
-    hi GlobalMark ctermfg=113 ctermbg=175 guifg=#87df5f guibg=#df87af
+    "windowsのカラーテーブル
+    if has( win64 )
+        ""local_markの色を定義
+        hi LocalMark ctermfg=254 ctermbg=242 guifg=#f9f1a5 guibg=#13a10e
+        ""global_markの色を定義
+        hi GlobalMark ctermfg=113 ctermbg=175 guifg=#0036da guibg=#f2f2f2
+    "linuxを想定
+    else
+        ""local_markの色を定義
+        "fg #dfff00 
+        "bg #008700
+        hi LocalMark ctermfg=190 ctermbg=28 guifg=#f9f1a5  guibg=#13a10e
+        ""global_markの色を定義
+        hi GlobalMark ctermfg=20 ctermbg=15 guifg=#0036da guibg=#f2f2f2
+    endif
 
     "local_mark
     for s:local_word in s:local_list
