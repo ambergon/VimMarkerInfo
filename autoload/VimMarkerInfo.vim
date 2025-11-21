@@ -194,7 +194,8 @@ function! VimMarkerInfo#setWindow()
     nnoremap <expr> M VimMarkerInfo#RemoveMark()
     augroup VimMarkerInfo
         autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
-        autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
+        autocmd BufWinEnter * call VimMarkerInfo#signSet()
+        " autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
         autocmd BufWinEnter * call VimMarkerInfo#updateBuffer()
         " autocmd BufNewFile * call timer_start( g:MarkerTimer , {->VimMarkerInfo#updateBuffer()} , {'repeat': -1})
     augroup end
