@@ -195,6 +195,8 @@ function! VimMarkerInfo#setWindow()
     augroup VimMarkerInfo
         autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
         autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
+        autocmd BufWinEnter * call VimMarkerInfo#updateBuffer()
+        " autocmd BufNewFile * call timer_start( g:MarkerTimer , {->VimMarkerInfo#updateBuffer()} , {'repeat': -1})
     augroup end
     " 一定間隔で m' を監視し、更新する。
     let s:timer = timer_start( g:MarkerTimer , {->VimMarkerInfo#checkLast()} , {'repeat': -1})
