@@ -3,7 +3,7 @@
 
 
 
-let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
+" let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 
 
 
@@ -18,10 +18,16 @@ let s:local_list ='abcdefghijklmnopqrstuvwxyz'
 let s:global_list ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 " 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
+" m' の自動更新間隔
+"{{{
+if !exists("g:MarkerTimer")
+    let g:MarkerTimer = 8000
+endif
+"}}}
 " 専用ウィンドウの幅
 "{{{
 if !exists("g:MarkerInfoWindowSize")
-    let g:MarkerInfoWindowSize =30
+    let g:MarkerInfoWindowSize =35
 endif
 "}}}
 " サインに使用するアルファベット小文字
@@ -45,8 +51,24 @@ endif
 "}}}
 
 
+" 専用バッファの ': を更新する。
+"{{{
+function! VimMarkerInfo#checkLast()
+    " バッファが存在しなければキャンセル
+    let l:winid = bufwinid(bufnr( s:VimMarkerInfoBuffer ))
+    if l:winid is -1
+        call timer_stop( s:timer )
+        return
+    endif
 
-
+    " let l:now = "': " . getline( getpos( "''" )[1] )
+    let l:now = "': " .  VimMarkerInfo#replace( getline( getpos( "''" )[1] ))
+    let l:old = getbufoneline( s:VimMarkerInfoBuffer , 1)
+    if l:now != l:old 
+        call setbufline(s:VimMarkerInfoBuffer, 1 , l:now )
+    endif
+endfunction
+"}}}
 
 " ウィンドウサイズの変更を修復する。
 "{{{
@@ -134,6 +156,7 @@ function VimMarkerInfo#updateBuffer()
     " 直前まで使用していた場所を表示する。
     if getpos( "''" )[1] != 0
         let l:x = l:x+1
+        " let l:line = "': " .  getline(getpos( "''" )[1])
         let l:line = "': " .  VimMarkerInfo#replace( getline(getpos( "''" )[1]))
         call setbufline(s:VimMarkerInfoBuffer,  l:x, l:line )
         let l:x = l:x+1
@@ -171,8 +194,10 @@ function! VimMarkerInfo#setWindow()
     nnoremap <expr> M VimMarkerInfo#RemoveMark()
     augroup VimMarkerInfo
         autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
-        autocmd WinEnter * call VimMarkerInfo#signSet()
+        autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
     augroup end
+    " 一定間隔で m' を監視し、更新する。
+    let s:timer = timer_start( g:MarkerTimer , {->VimMarkerInfo#checkLast()} , {'repeat': -1})
 endfunction
 "}}}
 " 処理終了
@@ -180,6 +205,7 @@ endfunction
 function! VimMarkerInfo#closeWindow()
     call sign_unplace( 'local_group')
     call sign_unplace( 'global_group')
+    call timer_stop( s:timer )
     autocmd! VimMarkerInfo
     if bufexists(s:VimMarkerInfoBuffer)
         execute("bw " . s:VimMarkerInfoBuffer)
