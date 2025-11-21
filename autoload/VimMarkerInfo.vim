@@ -1,59 +1,103 @@
+
+
+
+
+
+" マーカーとして使用する名前群
 let s:local_list ='abcdefghijklmnopqrstuvwxyz'
 let s:global_list ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+" 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
-
+" 専用ウィンドウの幅
+"{{{
+if !exists("g:MarkerInfoWindowSize")
+    let g:MarkerInfoWindowSize =25
+endif
+"}}}
+" サインに使用するアルファベット小文字
+"{{{
 if !exists("g:marker_window_local")
     let g:marker_window_local=s:local_list
 endif
+"}}}
+" サインに使用するアルファベット大文字
+"{{{
 if !exists("g:marker_window_global")
     let g:marker_window_global=s:global_list
 endif
+"}}}
 
+let g:mark_replace = [["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
+" 専用ウィンドウの置換処理
+"{{{
 if !exists("g:mark_replace")
     let g:mark_replace =[["","",""]]
 endif
+"}}}
 
-if !exists("g:MarkerInfoWindowSize")
-    let g:MarkerInfoWindowSize =30
-endif
 
-function! VimMarkerInfo#closeWindow()
-    call sign_unplace( 'local_group')
-    call sign_unplace( 'global_group')
-    autocmd! left_window
-    autocmd! VimMarkerInfo
-    if bufexists(s:VimMarkerInfoBuffer)
-        execute("bw " . s:VimMarkerInfoBuffer)
+
+
+
+" ウィンドウサイズの変更を修復する。
+"{{{
+function! VimMarkerInfo#resizeMarkerInfoWindow()
+    " そのバッファを表示しているウィンドウIDを取得
+    let l:winid = bufwinid(bufnr( s:VimMarkerInfoBuffer ))
+    let l:current_winid = win_getid()
+    " 現在のウィンドウが専用バッファじゃなければ。
+    if l:winid isnot -1 
+        if l:winid is l:current_winid 
+            call win_execute( l:winid , 'wincmd H')
+            call win_execute( l:winid , 'vert resize' . g:MarkerInfoWindowSize)
+        endif
     endif
 endfunction
+"}}}
 
-function! VimMarkerInfo#setWindow()
-    call VimMarkerInfo#setHighLight()
-    call VimMarkerInfo#openMarkerWindow()
+" マークを付けるたびに自動で再表示する。
+"{{{
+function! VimMarkerInfo#setMark() 
+    let l:char = nr2char(getchar())
+    execute 'mark ' . l:char
     call VimMarkerInfo#signSet()
-    augroup VimMarkerInfo
-        autocmd bufEnter * call VimMarkerInfo#signSet()
-        autocmd bufWinEnter * call VimMarkerInfo#openMarkerWindow()
-        autocmd WinEnter * call VimMarkerInfo#openMarkerWindow()
-        autocmd InsertLeave * call VimMarkerInfo#openMarkerWindow() | call VimMarkerInfo#signSet()
-    augroup end
+    call VimMarkerInfo#openMarkerWindow()
 endfunction
+"}}}
+" M + other でマークを削除し更新する。
+"{{{
+function! VimMarkerInfo#RemoveMark()
+    let l:char = nr2char(getchar())
+    execute 'delmark ' . l:char
+    call VimMarkerInfo#signSet()
+    call VimMarkerInfo#openMarkerWindow()
+endfunction
+"}}}
 
+" 専用のウィンドウを開く。
+"{{{
 function! VimMarkerInfo#openMarkerWindow()
-    if !bufexists(s:VimMarkerInfoBuffer)
-        let l:current_winID = win_getid()
-        execute('aboveleft ' . g:MarkerInfoWindowSize . 'vs ' . s:VimMarkerInfoBuffer)
 
-        augroup left_window
-            execute("autocmd BufLeave <buffer> vert resize " . g:MarkerInfoWindowSize)
-            execute("autocmd VimResized <buffer> vert resize " . g:MarkerInfoWindowSize)
-            execute("autocmd BufWinLeave <buffer> vert resize " . g:MarkerInfoWindowSize)
-            execute("autocmd BufWinEnter <buffer> vert resize " . g:MarkerInfoWindowSize)
-            autocmd QuitPre <buffer> call VimMarkerInfo#quitBuffer()
-        augroup end
+    " そのバッファを表示しているウィンドウIDを取得
+    let l:winid = bufwinid(bufnr( s:VimMarkerInfoBuffer ))
+    " 無ければ再設置
+    if l:winid is -1
+        let l:current_winid = win_getid()
+        execute('aboveleft ' . g:MarkerInfoWindowSize . 'vs ' . s:VimMarkerInfoBuffer)
+        wincmd H
+        execute('vert resize ' . g:MarkerInfoWindowSize)
+        " equalalwaysが有効下で高さと幅を固定する。
+        setl winfixwidth
+        setl winfixheight
+        " 他のバッファを表示できないウィンドウとする。
+        setl winfixbuf
+
+        " 別のハイライトを使用する。
+        setl wincolor=MoreMsg
 
         "qで終了
-        nnoremap <buffer> q :q<CR>
+        " nnoremap <buffer> q :q<CR>
+
         "listに載せない
         setl nobuflisted
         "折り返さない
@@ -63,34 +107,19 @@ function! VimMarkerInfo#openMarkerWindow()
         setl buftype=nowrite
         "bufexist
         setl bufhidden=wipe
-        call win_gotoid(l:current_winID)
+        " 前のウィンドウに戻す。
+        call win_gotoid(l:current_winid)
     endif
-    call VimMarkerInfo#windowAppendLines()
-endfunction
+    " メインの処理が終わったタイミングで実行する。
+    call timer_start( 0 , {-> VimMarkerInfo#updateBuffer()})
 
-function! VimMarkerInfo#Replace( text )
-    let l:res = a:text
-    let l:res = substitute( l:res ,"^ *","",'')
-    for l:replace in g:mark_replace
-        let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
-    endfor
-    return l:res
 endfunction
+"}}}
 
-function! VimMarkerInfo#windowLocalMark(word)
-    let l:line = VimMarkerInfo#Replace(getline(getpos("'" . a:word)[1]))
-    return a:word . ":" . l:line
-endfunction
-
-function! VimMarkerInfo#windowGlobalMark(word)
-    let l:line = bufname(getpos("'" . a:word)[0])
-    return a:word . ":" . l:line
-endfunction
-
-function! VimMarkerInfo#windowAppendLines()
-    "clean
+" 専用バッファに情報を入力する。
+"{{{
+function VimMarkerInfo#updateBuffer()
     call deletebufline(s:VimMarkerInfoBuffer,1,"$")
-    
     ""local
     let l:x=0
     for l:local_word in g:marker_window_local
@@ -109,7 +138,59 @@ function! VimMarkerInfo#windowAppendLines()
         endif
     endfor
 endfunction
+"}}}
 
+
+" 処理開始
+"{{{
+function! VimMarkerInfo#setWindow()
+    call VimMarkerInfo#setHighLight()
+    call VimMarkerInfo#openMarkerWindow()
+    call VimMarkerInfo#signSet()
+    "m -> 何かで起動。
+    nnoremap <expr> m VimMarkerInfo#setMark()
+    nnoremap <expr> M VimMarkerInfo#RemoveMark()
+    augroup VimMarkerInfo
+        autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
+        autocmd WinEnter * call VimMarkerInfo#signSet()
+    augroup end
+endfunction
+"}}}
+" 処理終了
+"{{{
+function! VimMarkerInfo#closeWindow()
+    call sign_unplace( 'local_group')
+    call sign_unplace( 'global_group')
+    autocmd! VimMarkerInfo
+    if bufexists(s:VimMarkerInfoBuffer)
+        execute("bw " . s:VimMarkerInfoBuffer)
+    endif
+endfunction
+"}}}
+
+
+
+function! VimMarkerInfo#replace( text )
+    let l:res = a:text
+    let l:res = substitute( l:res ,"^ *","",'')
+    for l:replace in g:mark_replace
+        let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
+    endfor
+    return l:res
+endfunction
+
+function! VimMarkerInfo#windowLocalMark(word)
+    let l:line = VimMarkerInfo#replace(getline(getpos("'" . a:word)[1]))
+    return a:word . ": " . l:line
+endfunction
+
+function! VimMarkerInfo#windowGlobalMark(word)
+    let l:line = bufname(getpos("'" . a:word)[0])
+    return a:word . ": " . l:line
+endfunction
+
+" 指定したマーカの目印(sign)を設置する。
+"{{{
 function! VimMarkerInfo#signSet()
     ""すべて解除
     call sign_unplace( 'local_group')
@@ -132,7 +213,9 @@ function! VimMarkerInfo#signSet()
         endif
     endfor
 endfunction
-
+"}}}
+" マーカを表示するデザインを指定する。
+"{{{
 function! VimMarkerInfo#setHighLight()
     "windowsのカラーテーブル
     if has( 'win64' )
@@ -159,3 +242,13 @@ function! VimMarkerInfo#setHighLight()
         call sign_define("global_" . l:global_word,{"text" : l:global_word . ">", "texthl" : "GlobalMark"})
     endfor
 endfunction
+"}}}
+
+
+
+
+
+
+
+
+
