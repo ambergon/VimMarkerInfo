@@ -90,18 +90,22 @@ endfunction
 "{{{
 function! VimMarkerInfo#setMark() 
     let l:char = nr2char(getchar())
-    execute 'mark ' . l:char
-    call VimMarkerInfo#signSet()
-    call VimMarkerInfo#openMarkerWindow()
+    if l:char =~ '^[a-zA-Z]$'
+        execute 'mark ' . l:char
+        call VimMarkerInfo#signSet()
+        call VimMarkerInfo#openMarkerWindow()
+    endif
 endfunction
 "}}}
 " M + other でマークを削除し更新する。
 "{{{
 function! VimMarkerInfo#RemoveMark()
     let l:char = nr2char(getchar())
-    execute 'delmark ' . l:char
-    call VimMarkerInfo#signSet()
-    call VimMarkerInfo#openMarkerWindow()
+    if l:char =~ '^[a-zA-Z]$'
+        execute 'delmark ' . l:char
+        call VimMarkerInfo#signSet()
+        call VimMarkerInfo#openMarkerWindow()
+    endif
 endfunction
 "}}}
 
