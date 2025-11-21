@@ -18,12 +18,6 @@ let s:local_list ='abcdefghijklmnopqrstuvwxyz'
 let s:global_list ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 " 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
-" 自動で起動する設定
-"{{{
-if exists( 'g:startVimMarkerInfo' ) && g:startVimMarkerInfo == 1
-    autocmd VimEnter * :MarkerInfo
-endif
-"}}}
 " m' の自動更新間隔
 "{{{
 if !exists("g:MarkerTimer")
