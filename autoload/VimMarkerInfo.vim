@@ -3,6 +3,16 @@
 
 
 
+let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
+
+
+
+
+
+
+
+
+
 " マーカーとして使用する名前群
 let s:local_list ='abcdefghijklmnopqrstuvwxyz'
 let s:global_list ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -11,7 +21,7 @@ let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
 " 専用ウィンドウの幅
 "{{{
 if !exists("g:MarkerInfoWindowSize")
-    let g:MarkerInfoWindowSize =25
+    let g:MarkerInfoWindowSize =30
 endif
 "}}}
 " サインに使用するアルファベット小文字
@@ -27,7 +37,6 @@ if !exists("g:marker_window_global")
 endif
 "}}}
 
-let g:mark_replace = [["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 " 専用ウィンドウの置換処理
 "{{{
 if !exists("g:mark_replace")
@@ -119,9 +128,19 @@ endfunction
 " 専用バッファに情報を入力する。
 "{{{
 function VimMarkerInfo#updateBuffer()
-    call deletebufline(s:VimMarkerInfoBuffer,1,"$")
-    ""local
     let l:x=0
+    call deletebufline(s:VimMarkerInfoBuffer,1,"$")
+
+    " 直前まで使用していた場所を表示する。
+    if getpos( "''" )[1] != 0
+        let l:x = l:x+1
+        let l:line = "': " .  VimMarkerInfo#replace( getline(getpos( "''" )[1]))
+        call setbufline(s:VimMarkerInfoBuffer,  l:x, l:line )
+        let l:x = l:x+1
+        call setbufline(s:VimMarkerInfoBuffer,  l:x, "=============================")
+    endif
+
+    ""local
     for l:local_word in g:marker_window_local
         if getpos("'" . l:local_word)[1] != 0
             let l:x = l:x+1
@@ -172,7 +191,6 @@ endfunction
 
 function! VimMarkerInfo#replace( text )
     let l:res = a:text
-    let l:res = substitute( l:res ,"^ *","",'')
     for l:replace in g:mark_replace
         let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
     endfor
