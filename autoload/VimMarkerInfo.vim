@@ -149,7 +149,7 @@ endfunction
 
 " 専用バッファに情報を入力する。
 "{{{
-function VimMarkerInfo#updateBuffer()
+function! VimMarkerInfo#updateBuffer()
     let l:x=0
     call deletebufline(s:VimMarkerInfoBuffer,1,"$")
 
@@ -244,10 +244,9 @@ function! VimMarkerInfo#signSet()
     
     for l:local_word in s:local_list
         if getpos("'" . l:local_word)[1] != 0
-            call sign_place( 0, 'local_group', 'local_' . l:local_word, bufnr(),{'lnum' : getpos("'" . l:local_word)[1], 'priority' : 10 })
+            call sign_place( 0, 'local_group', 'local_' . l:local_word, bufnr(),{'lnum' : getpos("'" . l:local_word)[1], 'priority' : 30 })
         endif
     endfor
-    
     ""global_mark
     for l:global_word in s:global_list
         "getpos = 0行 = 未設定 だとエラー
@@ -268,7 +267,8 @@ function! VimMarkerInfo#setHighLight()
         ""local_markの色を定義
         hi LocalMark ctermfg=254 ctermbg=242 guifg=#f9f1a5 guibg=#13a10e
         ""global_markの色を定義
-        hi GlobalMark ctermfg=113 ctermbg=175 guifg=#0036da guibg=#f2f2f2
+        hi GlobalMark ctermfg=113 ctermbg=0 guifg=#0036da guibg=#f2f2f2
+        " hi GlobalMark ctermfg=113 ctermbg=175 guifg=#0036da guibg=#f2f2f2
     "linuxを想定
     else
         ""local_markの色を定義
@@ -276,7 +276,7 @@ function! VimMarkerInfo#setHighLight()
         "bg #008700
         hi LocalMark ctermfg=190 ctermbg=28 guifg=#f9f1a5  guibg=#13a10e
         ""global_markの色を定義
-        hi GlobalMark ctermfg=20 ctermbg=15 guifg=#0036da guibg=#f2f2f2
+        hi GlobalMark ctermfg=20 ctermbg=9 guifg=#0036da guibg=#f2f2f2
     endif
 
     "local_mark
