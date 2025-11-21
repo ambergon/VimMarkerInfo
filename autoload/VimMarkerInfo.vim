@@ -197,6 +197,7 @@ function! VimMarkerInfo#setWindow()
     nnoremap <expr> m VimMarkerInfo#setMark()
     nnoremap <expr> M VimMarkerInfo#RemoveMark()
     augroup VimMarkerInfo
+        autocmd!
         autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
         autocmd BufWinEnter * call VimMarkerInfo#signSet()
         " autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
