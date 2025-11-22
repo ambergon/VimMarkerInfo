@@ -3,14 +3,18 @@
 
 
 
-" let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 
-" let g:sign_highlight_cui=[ local_ctermfg , local_ctermbg , global_ctermfg , global_ctermbg ]
-" let g:sign_highlight_gui=[ local_guifg   , local_guibg   , global_guifg   , global_guibg   ]
-let g:sign_highlight_cui=[ '254' , '242' , '113' , '0' ]
-let g:sign_highlight_gui=[ '#f9f1a5' , '#13a10e' , '#0036da' , '#f2f2f2' ]
-
-
+" ハイライトカラーの指定がない場合のデフォルト
+"{{{
+if !exists("g:sign_highlight_cui")
+    let g:sign_highlight_cui=[ '254' , '242' , '113' , '0' ]
+endif
+"}}}
+"{{{
+if !exists("g:sign_highlight_gui")
+    let g:sign_highlight_gui=[ '#f9f1a5' , '#13a10e' , '#0036da' , '#f2f2f2' ]
+endif
+"}}}
 
 " 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
@@ -40,9 +44,10 @@ endif
 "}}}
 
 " 専用ウィンドウの置換処理
+" let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 "{{{
 if !exists("g:mark_replace")
-    let g:mark_replace =[["","",""]]
+    let g:mark_replace =[]
 endif
 "}}}
 
