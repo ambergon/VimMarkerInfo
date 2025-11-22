@@ -10,15 +10,6 @@
 let g:sign_highlight_cui=[ '254' , '242' , '113' , '0' ]
 let g:sign_highlight_gui=[ '#f9f1a5' , '#13a10e' , '#0036da' , '#f2f2f2' ]
 
-"hi LocalMark  ctermfg=254 ctermbg=242 
-"hi GlobalMark ctermfg=113 ctermbg=0 
-"" gui環境での色を定義
-"hi LocalMark  guifg=#f9f1a5 guibg=#13a10e
-"hi GlobalMark guifg=#0036da guibg=#f2f2f2
-
-
-
-
 
 
 " 専用バッファの名前
@@ -159,6 +150,11 @@ endfunction
 " 専用バッファに情報を入力する。
 "{{{
 function! VimMarkerInfo#updateBuffer()
+    " let l:winid = bufwinid(bufnr( s:VimMarkerInfoBuffer ))
+    " if l:winid is -1
+    "     return
+    " endif
+
     let l:x=0
     call deletebufline(s:VimMarkerInfoBuffer,1,"$")
 
@@ -205,10 +201,9 @@ function! VimMarkerInfo#setWindow()
         autocmd!
         autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
         autocmd BufWinEnter * call VimMarkerInfo#signSet()
-        " autocmd WinEnter,BufWinEnter,BufEnter * call VimMarkerInfo#signSet()
         autocmd BufWinEnter * call VimMarkerInfo#updateBuffer()
-        " autocmd BufNewFile * call timer_start( g:MarkerTimer , {->VimMarkerInfo#updateBuffer()} , {'repeat': -1})
     augroup end
+    execute( 'autocmd BufWipeout ' . s:VimMarkerInfoBuffer . ' ++once call VimMarkerInfo#closeWindow()' )
     " 一定間隔で m' を監視し、更新する。
     let s:timer = timer_start( g:MarkerTimer , {->VimMarkerInfo#checkLast()} , {'repeat': -1})
 endfunction
@@ -216,13 +211,12 @@ endfunction
 " 処理終了
 "{{{
 function! VimMarkerInfo#closeWindow()
+    nunmap m
+    nunmap M
     call sign_unplace( 'local_group')
     call sign_unplace( 'global_group')
     call timer_stop( s:timer )
     autocmd! VimMarkerInfo
-    if bufexists(s:VimMarkerInfoBuffer)
-        execute("bw " . s:VimMarkerInfoBuffer)
-    endif
 endfunction
 "}}}
 

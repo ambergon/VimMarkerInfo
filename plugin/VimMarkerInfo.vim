@@ -18,7 +18,6 @@ endif
 let g:loaded_VimMarkerInfo = 1
 
 command! -nargs=0 MarkerInfo call VimMarkerInfo#setWindow()
-command! -nargs=0 MarkerInfoOff call VimMarkerInfo#closeWindow()
 
 " 自動で起動する設定
 "{{{
