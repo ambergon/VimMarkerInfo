@@ -5,9 +5,16 @@
 
 " let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 
-let sign_highlight_gui=[ 0 , 0 , 0 , 0 ]
-let sign_highlight_cui=[ 0 , 0 , 0 , 0 ]
+" let g:sign_highlight_cui=[ local_ctermfg , local_ctermbg , global_ctermfg , global_ctermbg ]
+" let g:sign_highlight_gui=[ local_guifg   , local_guibg   , global_guifg   , global_guibg   ]
+let g:sign_highlight_cui=[ '254' , '242' , '113' , '0' ]
+let g:sign_highlight_gui=[ '#f9f1a5' , '#13a10e' , '#0036da' , '#f2f2f2' ]
 
+"hi LocalMark  ctermfg=254 ctermbg=242 
+"hi GlobalMark ctermfg=113 ctermbg=0 
+"" gui環境での色を定義
+"hi LocalMark  guifg=#f9f1a5 guibg=#13a10e
+"hi GlobalMark guifg=#0036da guibg=#f2f2f2
 
 
 
@@ -267,11 +274,10 @@ endfunction
 "{{{
 function! VimMarkerInfo#setHighLight()
     " cui環境での色を定義
-    hi LocalMark ctermfg=254 ctermbg=242 
-    hi GlobalMark ctermfg=113 ctermbg=0 
-    " gui環境での色を定義
-    hi LocalMark guifg=#f9f1a5 guibg=#13a10e
-    hi GlobalMark guifg=#0036da guibg=#f2f2f2
+    execute( 'hi LocalMark  ctermfg=' . g:sign_highlight_cui[0]' . ctermbg=' . g:sign_highlight_cui[1] )
+    execute( 'hi GlobalMark ctermfg=' . g:sign_highlight_cui[2]' . ctermbg=' . g:sign_highlight_cui[3] ) 
+    execute( 'hi LocalMark  guifg=' . g:sign_highlight_gui[0]' . guibg=' . g:sign_highlight_gui[1] )
+    execute( 'hi GlobalMark guifg=' . g:sign_highlight_gui[2]' . guibg=' . g:sign_highlight_gui[3] ) 
 
     " local_mark
     for s:local_word in g:VimMarkerInfoLocalSignList
