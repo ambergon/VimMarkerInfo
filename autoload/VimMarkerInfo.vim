@@ -274,10 +274,10 @@ endfunction
 "{{{
 function! VimMarkerInfo#setHighLight()
     " cui環境での色を定義
-    execute( 'hi LocalMark  ctermfg=' . g:sign_highlight_cui[0]' . ctermbg=' . g:sign_highlight_cui[1] )
-    execute( 'hi GlobalMark ctermfg=' . g:sign_highlight_cui[2]' . ctermbg=' . g:sign_highlight_cui[3] ) 
-    execute( 'hi LocalMark  guifg=' . g:sign_highlight_gui[0]' . guibg=' . g:sign_highlight_gui[1] )
-    execute( 'hi GlobalMark guifg=' . g:sign_highlight_gui[2]' . guibg=' . g:sign_highlight_gui[3] ) 
+    execute( 'hi LocalMark  ctermfg=' . g:sign_highlight_cui[0] . ' ctermbg=' . g:sign_highlight_cui[1] )
+    execute( 'hi GlobalMark ctermfg=' . g:sign_highlight_cui[2] . ' ctermbg=' . g:sign_highlight_cui[3] ) 
+    execute( 'hi LocalMark  guifg=' . g:sign_highlight_gui[0]   . ' guibg=' . g:sign_highlight_gui[1] )
+    execute( 'hi GlobalMark guifg=' . g:sign_highlight_gui[2]   . ' guibg=' . g:sign_highlight_gui[3] ) 
 
     " local_mark
     for s:local_word in g:VimMarkerInfoLocalSignList
