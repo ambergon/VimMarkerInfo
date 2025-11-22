@@ -5,6 +5,8 @@
 
 " let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","","g"],["}}}","","g"]]
 
+let sign_highlight_gui=[ 0 , 0 , 0 , 0 ]
+let sign_highlight_cui=[ 0 , 0 , 0 , 0 ]
 
 
 
@@ -12,10 +14,6 @@
 
 
 
-
-" マーカーとして使用する名前群
-let s:local_list ='abcdefghijklmnopqrstuvwxyz'
-let s:global_list ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 " 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
 " m' の自動更新間隔
@@ -32,14 +30,14 @@ endif
 "}}}
 " サインに使用するアルファベット小文字
 "{{{
-if !exists("g:marker_window_local")
-    let g:marker_window_local=s:local_list
+if !exists("g:VimMarkerInfoLocalSignList")
+    let g:VimMarkerInfoLocalSignList='abcdefghijklmnopqrstuvwxyz'
 endif
 "}}}
 " サインに使用するアルファベット大文字
 "{{{
-if !exists("g:marker_window_global")
-    let g:marker_window_global=s:global_list
+if !exists("g:VimMarkerInfoGlobalSignList")
+    let g:VimMarkerInfoGlobalSignList='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 endif
 "}}}
 
@@ -168,7 +166,7 @@ function! VimMarkerInfo#updateBuffer()
     endif
 
     ""local
-    for l:local_word in g:marker_window_local
+    for l:local_word in g:VimMarkerInfoLocalSignList
         if getpos("'" . l:local_word)[1] != 0
             let l:x = l:x+1
             call setbufline(s:VimMarkerInfoBuffer,  l:x, VimMarkerInfo#windowLocalMark(l:local_word))
@@ -177,7 +175,7 @@ function! VimMarkerInfo#updateBuffer()
     let l:x = l:x+1
     call setbufline(s:VimMarkerInfoBuffer,  l:x, "=============================")
     ""global
-    for l:global_word in g:marker_window_global
+    for l:global_word in g:VimMarkerInfoGlobalSignList
         if getpos("'" . l:global_word)[1] != 0
             let l:x = l:x+1
             call setbufline(s:VimMarkerInfoBuffer,  l:x, VimMarkerInfo#windowGlobalMark(l:global_word))
@@ -248,13 +246,13 @@ function! VimMarkerInfo#signSet()
     call sign_unplace( 'local_group')
     call sign_unplace( 'global_group')
     
-    for l:local_word in s:local_list
+    for l:local_word in g:VimMarkerInfoLocalSignList
         if getpos("'" . l:local_word)[1] != 0
             call sign_place( 0, 'local_group', 'local_' . l:local_word, bufnr(),{'lnum' : getpos("'" . l:local_word)[1], 'priority' : 30 })
         endif
     endfor
     ""global_mark
-    for l:global_word in s:global_list
+    for l:global_word in g:VimMarkerInfoGlobalSignList
         "getpos = 0行 = 未設定 だとエラー
         if getpos("'" . l:global_word)[1] != 0
             "getBufnum = current
@@ -268,29 +266,19 @@ endfunction
 " マーカを表示するデザインを指定する。
 "{{{
 function! VimMarkerInfo#setHighLight()
-    "windowsのカラーテーブル
-    if has( 'win64' )
-        ""local_markの色を定義
-        hi LocalMark ctermfg=254 ctermbg=242 guifg=#f9f1a5 guibg=#13a10e
-        ""global_markの色を定義
-        hi GlobalMark ctermfg=113 ctermbg=0 guifg=#0036da guibg=#f2f2f2
-        " hi GlobalMark ctermfg=113 ctermbg=175 guifg=#0036da guibg=#f2f2f2
-    "linuxを想定
-    else
-        ""local_markの色を定義
-        "fg #dfff00 
-        "bg #008700
-        hi LocalMark ctermfg=190 ctermbg=28 guifg=#f9f1a5  guibg=#13a10e
-        ""global_markの色を定義
-        hi GlobalMark ctermfg=20 ctermbg=9 guifg=#0036da guibg=#f2f2f2
-    endif
+    " cui環境での色を定義
+    hi LocalMark ctermfg=254 ctermbg=242 
+    hi GlobalMark ctermfg=113 ctermbg=0 
+    " gui環境での色を定義
+    hi LocalMark guifg=#f9f1a5 guibg=#13a10e
+    hi GlobalMark guifg=#0036da guibg=#f2f2f2
 
-    "local_mark
-    for s:local_word in s:local_list
+    " local_mark
+    for s:local_word in g:VimMarkerInfoLocalSignList
         call sign_define("local_" . s:local_word,{"text" : s:local_word . ">", "texthl" : "LocalMark"})
     endfor
-    "global_mark
-    for l:global_word in s:global_list
+    " global_mark
+    for l:global_word in g:VimMarkerInfoGlobalSignList
         call sign_define("global_" . l:global_word,{"text" : l:global_word . ">", "texthl" : "GlobalMark"})
     endfor
 endfunction
