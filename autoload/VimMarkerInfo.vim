@@ -134,15 +134,15 @@ function! VimMarkerInfo#openMarkerWindow()
         "qで終了
         " nnoremap <buffer> q :q<CR>
 
-        "listに載せない
-        setl nobuflisted
         "折り返さない
         setl nowrap
         setl nonumber
         setl norelativenumber
-        setl buftype=nowrite
-        "bufexist
+        "listに載せない bnextなどが聞かなくなるように。
+        setl nobuflisted
+        setl buftype=nofile
         setl bufhidden=wipe
+        setl noswapfile
         " 前のウィンドウに戻す。
         call win_gotoid(l:current_winid)
     endif
