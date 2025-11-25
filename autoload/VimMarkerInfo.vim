@@ -96,6 +96,7 @@ function! VimMarkerInfo#setMark()
         call VimMarkerInfo#signSet()
         call VimMarkerInfo#openMarkerWindow()
     endif
+    return ""
 endfunction
 "}}}
 " M + other でマークを削除し更新する。
@@ -107,6 +108,7 @@ function! VimMarkerInfo#RemoveMark()
         call VimMarkerInfo#signSet()
         call VimMarkerInfo#openMarkerWindow()
     endif
+    return ""
 endfunction
 "}}}
 
