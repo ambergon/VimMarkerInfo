@@ -206,9 +206,11 @@ function! VimMarkerInfo#setWindow()
     nnoremap <expr> M VimMarkerInfo#RemoveMark()
     augroup VimMarkerInfo
         autocmd!
-        autocmd WinEnter * call VimMarkerInfo#resizeMarkerInfoWindow()
+        autocmd WinEnter    * call VimMarkerInfo#resizeMarkerInfoWindow()
         autocmd BufWinEnter * call VimMarkerInfo#signSet()
         autocmd BufWinEnter * call VimMarkerInfo#updateBuffer()
+        " autocmd WinClosed,WinEnter   * call VimMarkerInfo#autoClose()
+        autocmd WinEnter * call VimMarkerInfo#autoClose()
     augroup end
     execute( 'autocmd BufWipeout ' . s:VimMarkerInfoBuffer . ' ++once call VimMarkerInfo#closeWindow()' )
     " 一定間隔で m' を監視し、更新する。
@@ -226,8 +228,28 @@ function! VimMarkerInfo#closeWindow()
     autocmd! VimMarkerInfo
 endfunction
 "}}}
-
-
+" ウィンドウを閉じた時、ほかに編集中のバッファがなければそのまま終了する。
+"{{{
+function! VimMarkerInfo#autoClose()
+    " echo winnr('$') 
+    " echo bufname('%')
+    " echo filter( range( 1 , bufnr( '$' ) ) , 'getbufvar( v:val , "&modified" )' )
+    " ウィンドウが1つのみか確認
+    if winnr('$') == 1
+        " 最後のウィンドウのバッファ名を取得
+        let l:bufname = bufname('%')
+        " バッファ名を確認
+        if l:bufname ==# s:VimMarkerInfoBuffer
+            " 未保存のバッファに編集中が無ければ。 rangeの中の変数v:xxx
+            let l:modified_buffers = filter( range( 1 , bufnr( '$' ) ) , 'getbufvar( v:val , "&modified" )' )
+            " 無ければ終了。
+            if empty( l:modified_buffers )
+                quit
+            endif
+        endif
+    endif
+endfunction
+"}}}
 
 function! VimMarkerInfo#replace( text )
     let l:res = a:text
