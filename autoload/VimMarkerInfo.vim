@@ -50,7 +50,11 @@ if !exists("g:mark_replace")
     let g:mark_replace =[]
 endif
 "}}}
-
+"{{{
+if !exists("g:mark_replace_file")
+    let g:mark_replace_file =[]
+endif
+"}}}
 
 " 専用バッファの ': を更新する。
 "{{{
@@ -251,24 +255,48 @@ function! VimMarkerInfo#autoClose()
 endfunction
 "}}}
 
+" 表示する行を置換。
+"{{{
 function! VimMarkerInfo#replace( text )
-    let l:res = a:text
     for l:replace in g:mark_replace
-        let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
+        let a:text = substitute( a:text ,replace[0],replace[1],replace[2])
     endfor
-    return l:res
+    return a:text
 endfunction
-
+"}}}
+" 表示するファイル名を置換。
+"{{{
+function! VimMarkerInfo#replacePath( file )
+    for l:replace in g:mark_replace_file
+        let a:file = substitute( a:file ,replace[0],replace[1],replace[2])
+    endfor
+    return a:file
+endfunction
+"}}}
+" マーカーで保存されている行を返す。
+"{{{
 function! VimMarkerInfo#windowLocalMark(word)
     let l:line = VimMarkerInfo#replace(getline(getpos("'" . a:word)[1]))
     return a:word . ": " . l:line
 endfunction
-
+"}}}
+" グローバルマーカーで保存されている行を返す。
+"{{{
 function! VimMarkerInfo#windowGlobalMark(word)
-    let l:line = bufname(getpos("'" . a:word)[0])
-    return a:word . ": " . l:line
+    " 該当バッファの番号
+    let l:buf = getpos("'" . a:word)[0]
+    " ファイル名を取得
+    let l:fullname = bufname( l:buf )
+    " 該当バッファが読み込まれているならばその内容を返す。
+    if bufloaded( l:buf ) != 0 && bufexists( l:buf )
+        let l:line = VimMarkerInfo#replace( getbufoneline( l:buf , getpos("'" . a:word)[1] ) )
+        return a:word . ": " . l:line
+    endif
+    " バッファの読み込みがされていなければファイル名だけを返す。
+    let l:name = VimMarkerInfo#replacePath( l:fullname )
+    return a:word . ": " . l:name
 endfunction
-
+"}}}
 " 指定したマーカの目印(sign)を設置する。
 "{{{
 function! VimMarkerInfo#signSet()
