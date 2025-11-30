@@ -258,7 +258,7 @@ endfunction
 " 表示する行を置換。
 "{{{
 function! VimMarkerInfo#replace( text )
-    for l:replace in g:mark_replace
+    for replace in g:mark_replace
         let a:text = substitute( a:text ,replace[0],replace[1],replace[2])
     endfor
     return a:text
@@ -267,7 +267,7 @@ endfunction
 " 表示するファイル名を置換。
 "{{{
 function! VimMarkerInfo#replacePath( file )
-    for l:replace in g:mark_replace_file
+    for replace in g:mark_replace_file
         let a:file = substitute( a:file ,replace[0],replace[1],replace[2])
     endfor
     return a:file
