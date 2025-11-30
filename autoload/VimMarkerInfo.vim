@@ -210,9 +210,9 @@ function! VimMarkerInfo#setWindow()
     nnoremap <expr> M VimMarkerInfo#RemoveMark()
     augroup VimMarkerInfo
         autocmd!
-        autocmd WinEnter    * call VimMarkerInfo#resizeMarkerInfoWindow()
-        autocmd BufWinEnter * call VimMarkerInfo#signSet()
-        autocmd BufWinEnter * call VimMarkerInfo#updateBuffer()
+        autocmd WinEnter                * call VimMarkerInfo#resizeMarkerInfoWindow()
+        autocmd WinEnter,BufWinEnter    * call VimMarkerInfo#signSet()
+        autocmd WinEnter,BufWinEnter    * call VimMarkerInfo#updateBuffer()
         " autocmd WinClosed,WinEnter   * call VimMarkerInfo#autoClose()
         autocmd WinEnter * call VimMarkerInfo#autoClose()
     augroup end
