@@ -258,19 +258,21 @@ endfunction
 " 表示する行を置換。
 "{{{
 function! VimMarkerInfo#replace( text )
+    let l:res = a:text
     for replace in g:mark_replace
-        let a:text = substitute( a:text ,replace[0],replace[1],replace[2])
+        let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
     endfor
-    return a:text
+    return l:res
 endfunction
 "}}}
 " 表示するファイル名を置換。
 "{{{
-function! VimMarkerInfo#replacePath( file )
+function! VimMarkerInfo#replacePath( path )
+    let l:res = a:path
     for replace in g:mark_replace_file
-        let a:file = substitute( a:file ,replace[0],replace[1],replace[2])
+        let l:les = substitute( l:les ,replace[0],replace[1],replace[2])
     endfor
-    return a:file
+    return l:les
 endfunction
 "}}}
 " マーカーで保存されている行を返す。
