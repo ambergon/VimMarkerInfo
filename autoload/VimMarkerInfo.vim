@@ -270,9 +270,9 @@ endfunction
 function! VimMarkerInfo#replacePath( path )
     let l:res = a:path
     for replace in g:mark_replace_file
-        let l:les = substitute( l:les ,replace[0],replace[1],replace[2])
+        let l:res = substitute( l:res ,replace[0],replace[1],replace[2])
     endfor
-    return l:les
+    return l:res
 endfunction
 "}}}
 " マーカーで保存されている行を返す。
