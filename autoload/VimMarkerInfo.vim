@@ -292,7 +292,10 @@ function! VimMarkerInfo#windowGlobalMark(word)
     " 該当バッファが読み込まれているならばその内容を返す。
     if bufloaded( l:buf ) != 0 && bufexists( l:buf )
         let l:line = VimMarkerInfo#replace( getbufoneline( l:buf , getpos("'" . a:word)[1] ) )
-        return a:word . ": " . l:line
+        " 指定行が空欄だった以外の場合のみ内容を返す。
+        if substitute( l:line , "^ *" , "" , "" ) != "" 
+            return a:word . ": " . l:line
+        endif
     endif
     " バッファの読み込みがされていなければファイル名だけを返す。
     let l:name = VimMarkerInfo#replacePath( l:fullname )
