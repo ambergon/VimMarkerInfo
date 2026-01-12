@@ -12,35 +12,23 @@ Usage:
 ```
 開始
 	:MarkerInfo
-
-終了
-	:MarkerInfoOff
 ```
 
 ウィンドウが更新されるタイミング:
 ------
-ウィンドウやバッファに入ったタイミング、
-insert mode から normal modeに戻ったタイミングで更新されます。
-
-マークしたタイミングでは更新されません。
+ウィンドウやバッファに入る、マークを設置したタイミング
 
 setting:
 ------
 ```
-""vimrc setting
-"いずれも無設定でも運用可能。
-
-"windowに表示するmarkの指定
-"設定していない文字でもsignによる表示は有効。
-let g:marker_window_local = 'abcde'
-let g:marker_window_global = 'ABCDE'
-
-"windowに表示するlocalなマークの行の内容を置換する
-"s///gと同じ。
-let g:mark_replace = [["before","after",""],["","","g"]]
-
-"windowの横サイズを指定する。
-let g:MarkerInfoWindowSize =30
+" 自動起動を有効化
+let g:startVimMarkerInfo=1
+" cui環境下での色を指定
+let g:sign_highlight_cui=[ '2' , '0' , '113' , '0' ]
+" マークされた行を表示するウィンドウで置換
+let g:mark_replace = [["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","",""],["}}}","",""]]
+" グローバルマークされたファイル名を置換
+let g:mark_replace_file = [["\\","/","g"],['^scp://\(.\{-}\)/.*/','scp \1:',""],["^.*/","","g"]]
 ```
 
 
