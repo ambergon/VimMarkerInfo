@@ -18,12 +18,6 @@ endif
 
 " 専用バッファの名前
 let s:VimMarkerInfoBuffer ='MarkerInfoWindow://'
-" m' の自動更新間隔
-"{{{
-if !exists("g:MarkerTimer")
-    let g:MarkerTimer = 8000
-endif
-"}}}
 " 専用ウィンドウの幅
 "{{{
 if !exists("g:MarkerInfoWindowSize")

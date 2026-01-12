@@ -1,6 +1,6 @@
 *VimMarkerInfo.txt*	日本語ヘルプ
 
-Version : 
+Version :
 Author  : ambergon
 License : MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -39,8 +39,8 @@ TODO				|VimMarkerInfo-todo|
 ==============================================================================
 概要						*VimMarkerInfo-introduction*
 
-*VimMarkerInfo*
-はmarkの位置の可視化とマークの内容をいつでも確認することできるようになるプラグインです。
+*VimMarkerInfo* は
+markの位置の可視化とマークの内容をいつでも確認することできるようになるプラグインです。
 
 最新版:
 https://github.com/user/VimMarkerInfo.vim
@@ -49,69 +49,73 @@ https://github.com/user/VimMarkerInfo.vim
 ==============================================================================
 使い方						*VimMarkerInfo-usage*
 
-
 開始
 	:MarkerInfo
-
-終了
-	:MarkerInfoOff
-	
 
 ==============================================================================
 インターフェイス				*VimMarkerInfo-interface*
 
-
 マークした場所をsignで視覚化します。
-globalなマークとlocalなマークが重なった場合はglobalが優先されます。
+globalなマークとlocalなマークが重なった場合はlocalのマークが優先されます。
 
 専用ウィンドウに現在のマーク一覧が表示されます
-local : マークした行の内容。設定により置換が実行される。
-global: マークしたファイル名。
+local : マークした行の内容。
+global: マークしたファイル名。バッファが読み込まれている場合は行の内容。
 
 ------------------------------------------------------------------------------
 変数						*VimMarkerInfo-variables*
 
-g:marker_window_local				*g:marker_window_local*
-	既定値: ='abcdefghijklmnopqrstuvwxyz'
+
+g:startVimMarkerInfo				*g:startVimMarkerInfo*
+
+1を指定することでvimを起動した際に自動で起動する。
+
+g:sign_highlight_cui				*g:sign_highlight_cui*
+	既定値: =[ "254" , "242" , "113" , "0" ]
+
+cui環境におけるvimで扱える色番号を指定する。
+signの色に影響する。
+[ "local字色" , "local背景" , "global字色" , "global背景" ]
 
 
-localなマーク[a-z]を指定します。
-指定しなかった場合はwindowに表示されるマークはa~zまでになります。
-a,b,cの三つのみが確認できればいい場合はvimrcに以下のように設定します。
-g;marker_window_local='abc'
+g:sign_highlight_gui				*g:sign_highlight_gui*
 
-
-
-g:marker_window_global				*g:marker_window_global*
-	既定値: ='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-
-
-globalなマーク[A-Z]を指定します。
-指定しなかった場合はwindowに表示されるマークはA~Zまでになります。
-A,B,Cの三つのみが確認できればいい場合はvimrcに以下のように設定します。
-g;marker_window_local='ABC'
-
-
-g:mark_replace					*g:mark_replace*
-	既定値: =[["","",""]]
-
-
-windowに表示される内容を置換します。複数指定することが可能です。
-windowを小さく有効活用する際に便利です。
-
-functionを表示しないようにする場合。
-g:mark_replace=[["function","",""],["置換前","置換後","flag"]
-
-flagには"g"を指定できます。
-s///gと同じものです。
-
+	既定値: =[ "#f9f1a5" , "#13a10e" , "#0036da" , "#f2f2f2" ]
+gui環境に置ける色をHEXで指定する。
 
 
 g:MarkerInfoWindowSize				*g:MarkerInfoWindowSize*
-	既定値: =30
+	既定値: =35
+
+ウィンドウの縦幅を指定する。
 
 
-ウィンドウの横幅を指定します。
+g:VimMarkerInfoLocalSignList			*g:VimMarkerInfoLocalSignList*
+	既定値: ="abcdefghijklmnopqrstuvwxyz"
+
+ウィンドウに表示するsignを指定する。
+ここで指定されていないものは表示されない。
+
+
+g:VimMarkerInfoGlobalSignList		*g:VimMarkerInfoGlobalSignList*
+	既定値: ="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+
+g:mark_replace					*g:mark_replace*
+	既定値: =[]
+
+ウィンドウにマークされた行の内容が出力される。
+以下は例。
+[["^ *","",""],["^Function","Func",""],["^function","func",""],["{{{","",""],["}}}","",""]]
+
+
+g:mark_replace_file				*g:mark_replace_file*
+	既定値: =[]
+
+グローバルなマークにおけるパス・ファイル名を置換する。
+以下は例。
+let g:mark_replace_file = [["\\","/","g"],['^scp://\(.\{-}\)/.*/','scp \1:',""],["^.*/","","g"]]
 
 
 ------------------------------------------------------------------------------
@@ -119,22 +123,19 @@ g:MarkerInfoWindowSize				*g:MarkerInfoWindowSize*
 
 :MarkerInfo					*:MarkerInfo*
 
-専用windowの表示とsignによるマークの視覚化をします。
-
-
-:MarkerInfoOff					*:MarkerInfoOff*
+手動で起動する。
 
 
 ------------------------------------------------------------------------------
 キーマッピング					*VimMarkerInfo-key-mappings*
 
-専用windowはqで終了することができます。
-
-
 ------------------------------------------------------------------------------
 関数						*VimMarkerInfo-functions*
 
-VimMarkerInfo#Replace( {text} )			*VimMarkerInfo#Replace()*
+VimMarkerInfo#RemoveMark()			*VimMarkerInfo#RemoveMark()*
+
+
+VimMarkerInfo#autoClose()			*VimMarkerInfo#autoClose()*
 
 
 VimMarkerInfo#closeWindow()			*VimMarkerInfo#closeWindow()*
@@ -143,7 +144,19 @@ VimMarkerInfo#closeWindow()			*VimMarkerInfo#closeWindow()*
 VimMarkerInfo#openMarkerWindow()	*VimMarkerInfo#openMarkerWindow()*
 
 
+VimMarkerInfo#replace( {text} )			*VimMarkerInfo#replace()*
+
+
+VimMarkerInfo#replacePath( {path} )		*VimMarkerInfo#replacePath()*
+
+
+VimMarkerInfo#resizeMarkerInfoWindow()	*VimMarkerInfo#resizeMarkerInfoWindow()*
+
+
 VimMarkerInfo#setHighLight()			*VimMarkerInfo#setHighLight()*
+
+
+VimMarkerInfo#setMark()				*VimMarkerInfo#setMark()*
 
 
 VimMarkerInfo#setWindow()			*VimMarkerInfo#setWindow()*
@@ -152,7 +165,7 @@ VimMarkerInfo#setWindow()			*VimMarkerInfo#setWindow()*
 VimMarkerInfo#signSet()				*VimMarkerInfo#signSet()*
 
 
-VimMarkerInfo#windowAppendLines()	*VimMarkerInfo#windowAppendLines()*
+VimMarkerInfo#updateBuffer()			*VimMarkerInfo#updateBuffer()*
 
 
 VimMarkerInfo#windowGlobalMark({word})	*VimMarkerInfo#windowGlobalMark()*
