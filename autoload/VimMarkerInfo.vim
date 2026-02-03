@@ -222,7 +222,7 @@ function! VimMarkerInfo#closeWindow()
     nunmap M
     call sign_unplace( 'local_group')
     call sign_unplace( 'global_group')
-    call timer_stop( s:timer )
+    " call timer_stop( s:timer )
     autocmd! VimMarkerInfo
 endfunction
 "}}}
